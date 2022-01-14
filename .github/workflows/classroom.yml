@@ -1,0 +1,90 @@
+name: GitHub Classroom Workflow
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+jobs:
+  build:
+    name: Autograding
+    runs-on: self-hosted
+    steps:
+      - uses: actions/checkout@v2
+#        with:
+#          fetch-depth: 0
+
+      # TODO build, test and deploy project
+
+      - name: Set up JDK 11
+        uses: actions/setup-java@v2
+        with:
+          java-version: '11'
+          distribution: 'adopt'
+      - name: Build GatewayService
+        run: mvn --batch-mode --update-snapshots verify -f GatewayCloud
+
+      - name: Build TicketService
+        run: mvn --batch-mode --update-snapshots verify -f TicketService
+
+      - name: Build FlightService
+        run: mvn --batch-mode --update-snapshots verify -f FlightService
+
+      - name: Build BonusService
+        run: mvn --batch-mode --update-snapshots verify -f BonusService
+
+#      - name: Deploy Gateway to Heroku
+#        uses: AkhileshNS/heroku-deploy@v3.12.12
+#        with:
+#          heroku_api_key: f914fe96-54b1-4b55-aa79-c9fafd2e29a8
+#          heroku_email: domanovkon@gmail.com
+#          heroku_app_name: lab2-gateway-service
+#          usedocker: true
+#          appdir: GatewayCloud
+
+#      - name: Deploy Ticket to Heroku
+#        uses: AkhileshNS/heroku-deploy@v3.12.12
+#        with:
+#          heroku_api_key: f914fe96-54b1-4b55-aa79-c9fafd2e29a8
+#          heroku_email: domanovkon@gmail.com
+#          heroku_app_name: lab3-ticket-service
+#          usedocker: true
+#          appdir: TicketService
+
+#      - name: Deploy Flight to Heroku
+#        uses: AkhileshNS/heroku-deploy@v3.12.12
+#        with:
+#          heroku_api_key: f914fe96-54b1-4b55-aa79-c9fafd2e29a8
+#          heroku_email: domanovkon@gmail.com
+#          heroku_app_name: lab2-flight-service
+#          usedocker: true
+#          appdir: FlightService
+
+      - name: Deploy Bonus to Heroku
+        uses: AkhileshNS/heroku-deploy@v3.12.12
+        with:
+          heroku_api_key: f914fe96-54b1-4b55-aa79-c9fafd2e29a8
+          heroku_email: domanovkon@gmail.com
+          heroku_app_name: lab2-bonus-service
+          usedocker: true
+          appdir: BonusService
+
+      - name: Sleep for 20s
+        uses: juliangruber/sleep-action@v1
+        with:
+          time: 20s
+
+#      - name: Run API Tests
+#        id: run-newman
+#        uses: anthonyvscode/newman-action@v1
+#        with:
+#           TODO insert your variant
+#          collection: v1/postman/[rsoi] postman_collection.json
+#          environment: v1/postman/[rsoi][heroku] postman_environment.json
+#          delayRequest: 50
+#          reporters: cli
+
+      - uses: education/autograding@v1
+        id: autograder
+        continue-on-error: true
